@@ -44,6 +44,9 @@ func (r *Route) Post(pattern string, h handleFun) {
 
 type RouteMux struct {
 	staticPath string
+
+	responsePrintLogFunc func(string)
+	requestPrintLogFunc  func(*http.Request)
 }
 
 func NewRouteMux() *RouteMux {
@@ -56,6 +59,16 @@ func (rt *RouteMux) Run(addr string) error {
 
 func (rt *RouteMux) Static(path string) {
 	rt.staticPath = path
+}
+
+// 设置数据请求时打印日志函数
+func (rt *RouteMux) SetRequestPrintLogFunc(fn func(*http.Request)) {
+	rt.requestPrintLogFunc = fn
+}
+
+// 设置请求响应时打印日志函数
+func (rt *RouteMux) SetResponsePrintLogFunc(fn func(string)) {
+	rt.responsePrintLogFunc = fn
 }
 
 func (rt *RouteMux) serveFile(w http.ResponseWriter, r *http.Request) {
@@ -90,7 +103,12 @@ func (rt *RouteMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	r.ParseForm()
 
+	if rt.requestPrintLogFunc != nil {
+		rt.requestPrintLogFunc(r)
+	}
+
 	ctx := context.NewContext(w, r)
+	ctx.SetPrintLogFunc(rt.responsePrintLogFunc)
 
 	for _, mw := range hd.mws {
 		if !mw(ctx) {

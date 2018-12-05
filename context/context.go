@@ -20,3 +20,7 @@ func NewContext(w http.ResponseWriter, r *http.Request) *Context {
 func (c *Context) Write(b []byte) (int, error) {
 	return c.w.Write(b)
 }
+
+func (c *Context) Request() *http.Request {
+	return c.r
+}

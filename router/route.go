@@ -7,7 +7,7 @@
 package router
 
 import (
-	"jerry/context"
+	"github.com/Hevi-Ye/jerry/context"
 	"net/http"
 	"os"
 )
@@ -87,6 +87,8 @@ func (rt *RouteMux) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
+
+	r.ParseForm()
 
 	ctx := context.NewContext(w, r)
 

@@ -5,7 +5,7 @@
 1. 客隆项目
 
 ```bash
-    $ git clone git@github.com:Hevi-Ye/jerry.git
+git clone git@github.com:heviye/jerry.git
 ```
 
 2. 创建自己的项目
@@ -16,8 +16,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/Hevi-Ye/jerry/context"
-	"github.com/Hevi-Ye/jerry/router"
+	"github.com/heviye/jerry/context"
+	"github.com/heviye/jerry/router"
 )
 
 func main() {
@@ -31,7 +31,7 @@ func main() {
 	r.Get("/users", GetUsers)
 
 	// 创建一个可带多个中间件的分组
-	rx := mux.Group(printLog, permiss)
+	rx := mux.Group(printLog, permission)
 	rx.Get("/test", Test)
 
 	mux.Run(":8888")
@@ -47,8 +47,8 @@ func printLog(c *context.Context) bool {
 	return true
 }
 
-func permiss(c *context.Context) bool {
-	id := c.Request().Form.Get("id")
+func permission(c *context.Context) bool {
+	id := c.Query("id")
 	if len(id) == 0 {
 		c.Write([]byte("id is empty"))
 		return false
@@ -60,5 +60,6 @@ func Test(c *context.Context) {
 	c.Write([]byte("Test"))
 }
 
-
 ```
+
+3. 浏览器打开`http://127.0.0.1:8888/test`
